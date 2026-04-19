@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="local.props" Condition="Exists('local.props')" />
   <Import Project="Sts2PathDiscovery.props" />
 
   <PropertyGroup>

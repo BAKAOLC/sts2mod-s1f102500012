@@ -46,32 +46,30 @@ internal static class AssetCache_LoadAsset_Patch
 [HarmonyPatch(typeof(RelicModel), nameof(RelicModel.Icon), MethodType.Getter)]
 internal static class RelicModel_Icon_Patch
 {
-	[HarmonyPrefix]
-	private static bool Prefix(RelicModel __instance, ref Texture2D __result)
+	[HarmonyPostfix]
+	private static void Postfix(RelicModel __instance, ref Texture2D __result)
 	{
 		if (!HeartsteelTextureLoader.TryGetHeartsteelRelicTexture(__instance, out Texture2D? texture))
 		{
-			return true;
+			return;
 		}
 
 		__result = texture!;
-		return false;
 	}
 }
 
 [HarmonyPatch(typeof(RelicModel), nameof(RelicModel.BigIcon), MethodType.Getter)]
 internal static class RelicModel_BigIcon_Patch
 {
-	[HarmonyPrefix]
-	private static bool Prefix(RelicModel __instance, ref Texture2D __result)
+	[HarmonyPostfix]
+	private static void Postfix(RelicModel __instance, ref Texture2D __result)
 	{
 		if (!HeartsteelTextureLoader.TryGetHeartsteelRelicTexture(__instance, out Texture2D? texture))
 		{
-			return true;
+			return;
 		}
 
 		__result = texture!;
-		return false;
 	}
 }
 
@@ -82,58 +80,55 @@ internal static class NRelic_Reload_Patch
 		typeof(NRelic).GetField("_model", BindingFlags.Instance | BindingFlags.NonPublic)
 		?? throw new InvalidOperationException("Could not access NRelic._model.");
 
-	[HarmonyPrefix]
-	private static bool Prefix(NRelic __instance)
+	[HarmonyPostfix]
+	private static void Postfix(NRelic __instance)
 	{
 		if (!__instance.IsNodeReady())
 		{
-			return true;
+			return;
 		}
 
 		if (RelicModelField.GetValue(__instance) is not RelicModel model
 			|| !HeartsteelTextureLoader.TryGetHeartsteelRelicTexture(model, out Texture2D? texture))
 		{
-			return true;
+			return;
 		}
 
 		model.UpdateTexture(__instance.Icon);
 		__instance.Icon.Texture = texture;
 		__instance.Outline.Visible = false;
-		return false;
 	}
 }
 
 [HarmonyPatch(typeof(PowerModel), nameof(PowerModel.Icon), MethodType.Getter)]
 internal static class PowerModel_Icon_Patch
 {
-	[HarmonyPrefix]
-	private static bool Prefix(PowerModel __instance, ref Texture2D __result)
+	[HarmonyPostfix]
+	private static void Postfix(PowerModel __instance, ref Texture2D __result)
 	{
 		Texture2D? texture = HeartsteelTextureLoader.TryGetHeartsteelPowerTexture(__instance);
 		if (texture == null)
 		{
-			return true;
+			return;
 		}
 
 		__result = texture;
-		return false;
 	}
 }
 
 [HarmonyPatch(typeof(PowerModel), nameof(PowerModel.BigIcon), MethodType.Getter)]
 internal static class PowerModel_BigIcon_Patch
 {
-	[HarmonyPrefix]
-	private static bool Prefix(PowerModel __instance, ref Texture2D __result)
+	[HarmonyPostfix]
+	private static void Postfix(PowerModel __instance, ref Texture2D __result)
 	{
 		Texture2D? texture = HeartsteelTextureLoader.TryGetHeartsteelPowerTexture(__instance);
 		if (texture == null)
 		{
-			return true;
+			return;
 		}
 
 		__result = texture;
-		return false;
 	}
 }
 
